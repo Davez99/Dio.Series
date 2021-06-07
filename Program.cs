@@ -17,16 +17,16 @@ namespace Dio.Series
                         ListarSeries();
                         break;
                     case "2":
-                        //InserirSerie();
+                        InserirSerie();
                         break;
                     case "3":
-                        //AtualizarSerie();
+                        AtualizarSerie();
                         break;
                     case "4":
-                        //ExcluirSerie();
+                        ExcluirSerie();
                         break;
                     case "5":
-                        //VisualizarSerie();
+                        VisualizarSerie();
                         break;
                     case "C":
                         Console.Clear();
@@ -43,6 +43,55 @@ namespace Dio.Series
             Console.ReadLine();
         }
 
+        private static void VisualizarSerie()
+        {
+            Console.Write("Digite o Id da série: ");
+            int indiceSerie = int.Parse(Console.ReadLine());
+
+            var serie = repositorio.RetornoPorId(indiceSerie);
+
+            Console.WriteLine(serie);
+        }
+
+        private static void ExcluirSerie()
+        {
+            Console.Write("Digite o Id da série: ");
+            int indiceSerie = int.Parse(Console.ReadLine());
+            
+            repositorio.Exclui(indiceSerie);
+        }
+
+        private static void AtualizarSerie()
+        {
+            Console.Write("Digite o Id da série: ");
+            int indiceSerie = int.Parse(Console.ReadLine());
+
+            foreach (int i in Enum.GetValues(typeof(Genero)))
+            {
+                Console.WriteLine("{0} - {1}", i, Enum.GetName(typeof(Genero), i));
+            }
+
+            Console.Write("Digite o genero da serie: ");
+            int entradaGenero = int.Parse(Console.ReadLine());
+
+            Console.Write("Digite o título: ");
+            string entradaTitulo = Console.ReadLine();
+
+            Console.Write("Digite o ano: ");
+            int entradaAno = int.Parse(Console.ReadLine());
+
+            Console.Write("De uma descrição: ");
+            string entradaDescricao = Console.ReadLine();
+
+            Serie atualizaSerie = new Serie(id: indiceSerie,
+                                        genero: (Genero)entradaGenero,
+                                        titulo: entradaTitulo,
+                                        ano: entradaAno,
+                                        descricao: entradaDescricao);
+            
+            repositorio.Atualiza(indiceSerie, atualizaSerie);
+        }
+
         private static void ListarSeries()
         {
             Console.WriteLine("Listar séries");
@@ -56,8 +105,41 @@ namespace Dio.Series
             }
             foreach(var serie in lista)
             {
-                Console.WriteLine($"# ID {serie.retornarId()}: - {serie.retornarTitulo()}");
+                var excluido = serie.retornaExcluido();
+
+                Console.WriteLine($"# ID {serie.retornarId()}: - {serie.retornarTitulo()} {(excluido ? "#Excluido" : "")}");
             }
+        }
+
+        private static void InserirSerie()
+        {
+            Console.WriteLine("Inserir nova série: ");
+
+            foreach (int i in Enum.GetValues(typeof(Genero)))
+            {
+                Console.WriteLine("{0} - {1}", i, Enum.GetName(typeof(Genero), i));
+            }
+
+            Console.Write("Digite o genero da serie: ");
+            int entradaGenero = int.Parse(Console.ReadLine());
+
+            Console.Write("Digite o título: ");
+            string entradaTitulo = Console.ReadLine();
+
+            Console.Write("Digite o ano: ");
+            int entradaAno = int.Parse(Console.ReadLine());
+
+            Console.Write("De uma descrição: ");
+            string entradaDescricao = Console.ReadLine();
+
+
+            Serie novaSerie = new Serie(id: repositorio.ProximoId(),
+                                        genero: (Genero)entradaGenero,
+                                        titulo: entradaTitulo,
+                                        ano: entradaAno,
+                                        descricao: entradaDescricao);
+            
+            repositorio.Insere(novaSerie);
         }
 
         private static string ObterOpcaoUsuario()
